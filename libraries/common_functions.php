@@ -6,11 +6,17 @@
  * @return string
  */ 
 function load_model($model_name) {
-	include APP_PATH . 'models/' . $model_name .'.php'; 
+    include APP_PATH . 'models/BaseResult.php';
+    include APP_PATH . 'models/BaseModel.php';
+    include APP_PATH . 'models/' . $model_name .'.php';
 }
 
 function redirect_page($url) {
 	header('Locaion');
+}
+function load_lib($name)
+{
+    include APP_PATH . 'libraries/'.$name.'.php';
 }
 
 function load_header() {
