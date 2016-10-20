@@ -5,12 +5,15 @@ include 'configs/config.php';
 include 'libraries/common_functions.php';
 include 'libraries/connect.php';
 $db=  connect_db();
-$controller = !empty($_GET['p']) ? $_GET['p'] : 'Offer';
+include 'controllers/BaseController.php';
 
-$controller_path = APP_PATH . 'controllers/' . $controller . '.php';
-
-if (is_file($controller_path)) {
-	include ($controller_path);
-} else {
-	include 'errors/404.php';
+$c = !empty($_GET['c']) ? $_GET['c'] : 'Offer';
+$controller_path = APP_PATH . 'controllers/' . $c . 'Controller.php';
+include_once($controller_path);
+switch ($c){
+	case "Users":
+		$controller = new \controllers\UsersController();
+		break;
 }
+$controller->invoke();
+?>
