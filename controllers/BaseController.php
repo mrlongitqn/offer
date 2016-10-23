@@ -13,6 +13,7 @@ namespace controllers;
 
 class BaseController
 {
+    public $model;
     public function Dump($data, $die = true)
     {
         var_dump($data);
@@ -35,4 +36,7 @@ class BaseController
         $this->ip = get_ip();
     }
 
+    public function ShowView($view)    {
+        
+    }
 }

@@ -1623,3 +1623,8 @@ button.swiper-pagination-bullet {
   box-sizing: border-box; }
 
 /*# sourceMappingURL=common.css.map */
+.loading-info{
+  margin: 5px;
+  font-size: 14px;
+  color: #f99200;
+}

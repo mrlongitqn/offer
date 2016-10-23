@@ -8,4 +8,4 @@ define('BASE_URL', 'http://localhost:81/offer/');
 define('SITE_URL', 'http://localhost:81/offer/index.php');
 define('ADMIN_DOMAIN', 'http://localhost:81/offer/administrator/');
 // Defined APP_PATH
-define('APP_PATH', 'C:/xampp/htdocs/offer/');
+define('APP_PATH', 'D:/xampp/htdocs/offer/');

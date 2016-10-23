@@ -16,15 +16,13 @@ use models\UsersModel;
 
 class UsersController extends BaseController
 {
-
-    public $model;
     public $curl;
 
     public function __construct()
     {
         load_model("UsersModel");
         load_lib("curl");
-        $this->curl = new  \cURL(true,false);
+        $this->curl = new  \cURL(true, false);
         $this->model = new UsersModel();
     }
 
@@ -59,27 +57,24 @@ class UsersController extends BaseController
                         $ratio = $gConfig[0]['value'];
                         $ip_limit = $gConfig[1]['value'];
                         $gmail_limit = $gConfig[2]['value'];
-                        $getVersion = str_replace(" ","",$gConfig[3]['value']);
+                        $getVersion = str_replace(" ", "", $gConfig[3]['value']);
                         $version = explode(",", $getVersion);
-                        if($this->model->CountIp($this->ip)>$ip_limit)
-                        {
+                        if ($this->model->CountIp($this->ip) > $ip_limit) {
                             $data->success = false;
                             $data->errorMessage = "Ip limit";
                         }
 
-                        if(!in_array($_POST['version'], $version)){
+                        if (!in_array($_POST['version'], $version)) {
                             $data->success = false;
                             $data->errorMessage = "Version not accept";
                         }
-                        if($this->model->CountGmail($_POST["google_account"])>$gmail_limit)
-                        {
+                        if ($this->model->CountGmail($_POST["google_account"]) > $gmail_limit) {
                             $data->success = false;
                             $data->errorMessage = "Gmail limit";
                         }
-                        $url = "http://ip-api.com/json/".$this->ip;
+                        $url = "http://ip-api.com/json/" . $this->ip;
                         $ip_data = json_decode($this->curl->get($url));
-                        if($ip_data['countryCode']!=$_POST['country'])
-                        {
+                        if ($ip_data['countryCode'] != $_POST['country']) {
                             $data->success = false;
                             $data->errorMessage = "Country/language wrong";
                         }
