@@ -10,8 +10,7 @@
 
 namespace models;
 
-class BaseResult
-{
+class BaseResult {
     public $success;
     public $errorCode;
     public $errorMessage;

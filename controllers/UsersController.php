@@ -12,26 +12,52 @@ namespace controllers;
 
 
 use models\BaseResult;
+use models\SessionsModel;
 use models\UsersModel;
 
 class UsersController extends BaseController
 {
     public $curl;
+    public $sessionModel;
 
     public function __construct()
     {
         load_model("UsersModel");
+        $this->model = new UsersModel();
+        load_model("SessionsModel");
+        $this->sessionModel = new SessionsModel();
         load_lib("curl");
         $this->curl = new  \cURL(true, false);
-        $this->model = new UsersModel();
     }
 
     public function invoke()
     {
         switch ($_GET['a']) {
             case 'register':
-                $rs = $this->model->Register($_POST);
-                if ($rs) {
+                $error = "Please fill form";
+                if (isset($_GET['ref']))
+                    $_SESSION['ref'] = $_GET['ref'];
+                if (isset($_POST['username'])) {
+                    $ref = isset($_SESSION['ref']) ? $_SESSION['ref'] : '';
+                    $rg = $this->model->Register($_POST, $ref);
+                    if ($rg !== true) {
+                        $error = $rg;
+                        $data_f = $_POST;
+                        include(APP_PATH . 'views/user/register.php');
+                    } else {
+                        redirect_page(BASE_URL . 'register_success.php');
+                    }
+                } else {
+                    $data_f['username'] = "";
+                    $data_f['fullname'] = "";
+                    $data_f['email'] = "";
+                    $data_f['mobilephone'] = "";
+                    include(APP_PATH . 'views/user/register.php');
+                }
+                break;
+            case 'registerApp':
+                $rs = $this->model->Register($_POST, '');
+                if ($rs == true) {
                     $data = new BaseResult(true, $_POST);
                     $data->Show();
                 } else {
@@ -40,7 +66,6 @@ class UsersController extends BaseController
                 }
 
                 break;
-
             case 'login':
                 if (isset($_POST)) {
                     $u = $_POST['username'];
@@ -59,6 +84,7 @@ class UsersController extends BaseController
                         $gmail_limit = $gConfig[2]['value'];
                         $getVersion = str_replace(" ", "", $gConfig[3]['value']);
                         $version = explode(",", $getVersion);
+                        $session_expired = $gConfig[4]['value'];
                         if ($this->model->CountIp($this->ip) > $ip_limit) {
                             $data->success = false;
                             $data->errorMessage = "Ip limit";
@@ -73,20 +99,44 @@ class UsersController extends BaseController
                             $data->errorMessage = "Gmail limit";
                         }
                         $url = "http://ip-api.com/json/" . $this->ip;
-                        $ip_data = json_decode($this->curl->get($url));
+                        // $ip_data = json_decode($this->curl->get($url));
+                        $ip_data['countryCode'] = 'vn';
                         if ($ip_data['countryCode'] != $_POST['country']) {
                             $data->success = false;
                             $data->errorMessage = "Country/language wrong";
                         }
-                        $user = $this->model->GetUser($mem['id']);
+                        $deviceLogin = $this->model->GetDeviceLogin($mem['id']);
+                        if (!isset($deviceLogin)) {
+                            //Insert
+                        }
+                        //create link active
+                        $guid = $this->sessionModel->CreateLinkActive($mem['id'], $deviceLogin['id'], $this->ip, $session_expired);
+                        $data->success = true;
 
-                        echo json_encode($user);
+                        $data->data = BASE_URL . 'index.php?c=Users&a=active&code=' . $guid;
+                        echo json_encode($data);
                     } else
                         echo json_encode(new BaseResult(false, 'User or password not match'));
                 }
                 break;
+            case "active":
+                if (isset($_GET['code'])) {
+                    $active = $this->sessionModel->ActiveLink($_GET['code']);
+                    if (isset($active)) {
+                        $deviceLogin = $this->model->GetDeviceLogin($active->member_id);
+                        $mem = $this->model->GetMemInfo($active->member_id);
+                        $_SESSION['expired'] = time() + ($active->expired_minutes * 60);
+                        $_SESSION['code'] = $_GET['code'];
+                        $_SESSION['data'] = json_encode($deviceLogin);
+                        $_SESSION['member'] = json_encode($mem);
+                    }
+                    header("Location: " . BASE_URL);
+                }
+                header("Location: " . BASE_URL);
+                break;
             default:
-                echo 'k co';
+                echo json_encode(new BaseResult(false, 'ERROR'));
+                break;
         }
     }
 }

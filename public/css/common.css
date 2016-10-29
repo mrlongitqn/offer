@@ -1057,8 +1057,11 @@ button.swiper-pagination-bullet {
       height: 37px; }
 
 .img-full {
-  width: 100%; }
-
+  width: 100%;
+}
+.left .img-full{
+  max-width: 52px;
+}
 .txt-center {
   text-align: center; }
 
@@ -1402,9 +1405,12 @@ button.swiper-pagination-bullet {
     right: 12px; }
   .page-login .modal-reset .modal-content .title {
     margin-bottom: 20px; }
-
+.page-register{
+  overflow: scroll;
+}
 .page-register .content {
-  padding-top: 4%; }
+  padding-top: 4%;
+}
 .page-register .title-page {
   margin-bottom: 30px; }
 
@@ -1627,4 +1633,24 @@ button.swiper-pagination-bullet {
   margin: 5px;
   font-size: 14px;
   color: #f99200;
+}
+.form-register .form-item{
+  text-align: center;
+}
+.form-register .form-item label{
+  color: #FFFFFF !important;
+}
+::-webkit-input-placeholder {
+  color: gray;
+}
+
+:-moz-placeholder { /* Firefox 18- */
+  color: gray;
+}
+::-moz-placeholder {  /* Firefox 19+ */
+  color: gray;
+}
+
+:-ms-input-placeholder {
+  color: gray;
 }

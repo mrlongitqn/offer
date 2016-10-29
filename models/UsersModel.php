@@ -12,15 +12,15 @@ namespace models;
 
 class UsersModel extends BaseModel
 {
-    public function Register($data){
-        if($this->CheckUser($data['username']))
+    public function Register($data, $ref){
+        if(!$this->CheckUser($data['username']))
             return 'Email exist';
-        if($this->CheckPhone($data["mobilephone"]))
+        if(!$this->CheckPhone($data["mobilephone"]))
             return 'Mobile phone exist';
-        if ($this->CheckEmail($data["email"]))
+        if (!$this->CheckEmail($data["email"]))
             return 'Email exist';
-        $sql = "INSERT INTO member(username, password, fullname, gender, dateofbirth, mobilephone, email,balance, group_id, role)".
-            " VALUES ('".$data['username']."', '".$data['password']."', '".$data['fullname']."','".$data['gender']."','".$data['dateofbirth']."','".$data['mobilephone']."','".$data['email']."','0','3','0')";
+        $sql = "INSERT INTO members(username, password, fullname, gender, dateofbirth, mobilephone, email,balance, group_id, role, ref)".
+            " VALUES ('".$data['username']."', '".$data['password']."', '".$data['fullname']."','".$data['gender']."','".$data['dateofbirth']."','".$data['mobilephone']."','".$data['email']."','0','3','0','$ref')";
         $commad =$this->db->prepare($sql);
         $commad->execute();
        return  $commad->rowCount()==1;
@@ -28,28 +28,36 @@ class UsersModel extends BaseModel
     
     
     private function CheckUser($username){
-        $r = $this->db->query("SELECT * FROM member WHERE username='$username'");
+        $r = $this->db->query("SELECT * FROM members WHERE username='$username'");
         return $r->rowCount()==0;
     }
     private function CheckEmail($mail){
-        $r = $this->db->query("SELECT * FROM member WHERE username='$mail'");
+        $r = $this->db->query("SELECT * FROM members WHERE email='$mail'");
         return $r->rowCount()==0;
     }
     private function CheckPhone($phone){
-        $r = $this->db->query("SELECT * FROM member WHERE username='$phone'");
+        $r = $this->db->query("SELECT * FROM members WHERE mobilephone='$phone'");
         return $r->rowCount()==0;
     }
 
     public function Login($username, $password)
     {
-        $r = $this->db->query("SELECT * FROM member WHERE username='$username' AND password='$password'");
+        $r = $this->db->query("SELECT * FROM members WHERE username='$username' AND password='$password'");
         if ($r->rowCount()==0)
             return null;
         return $r->fetch(2);
     }
 
-    public function GetUser($userId){
-        $sql = "SELECT * FROM users WHERE member_id='$userId'";
+    public function GetDeviceLogin($userId){
+        $sql = "SELECT * FROM device_login WHERE member_id='$userId'";
+        $r = $this->db->query($sql);
+        if ($r->rowCount()==0)
+            return false;
+        return $r->fetch(2);
+    }
+
+    public function GetMemInfo($userId){
+        $sql = "SELECT * FROM members WHERE id='$userId'";
         $r = $this->db->query($sql);
         if ($r->rowCount()==0)
             return false;
@@ -66,13 +74,13 @@ class UsersModel extends BaseModel
 
     public function CountIp($ip)
     {
-        $r = $this->db->query("SELECT COUNT(*) as count FROM users WHERE ip_address='$ip'");
+        $r = $this->db->query("SELECT COUNT(*) as count FROM device_login WHERE ip_address='$ip'");
         return $r->fetch(2)["count"];
     }
     
     public function CountGmail($gmail)
     {
-        $r = $this->db->query("SELECT COUNT(*) as count FROM users WHERE google_account='$gmail'");
+        $r = $this->db->query("SELECT COUNT(*) as count FROM device_login WHERE google_account='$gmail'");
         return $r->fetch(2)["count"];
     }
 

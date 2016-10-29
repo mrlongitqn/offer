@@ -46,7 +46,8 @@
     //Using for offer
     var offer_page = 1; //track user scroll as page number, right now page number is 1
     var loading_offer = false; //prevents multiple loads
-    load_offer();
+    //load_offer();
+    LoadOfferApi();
     $("#tab-discover").scroll(function () { //detect page scroll
         if ($("#tab-discover").scrollTop() + $("#tab-discover").innerHeight() >= this.scrollHeight - 100  && selectTab === 'offer') { //if user scrolled to bottom of the page
             load_offer(); //load content
@@ -74,7 +75,20 @@
             })
         }
     }
-
+    function LoadOfferApi() {
+            $('#loading_offer-info').show(); //show loading_offer animation
+            $.post('index.php?c=Offer&a=api', function (data) {
+                //set loading_offer flag off once the content is loaded
+                if (data.trim().length == 0) {
+                    $('#loading_offer-info').show();
+                    return;
+                }
+                $('#loading_offer-info').hide(); //hide loading_offer animation once data is received
+                $("#ul_offer").append(data); //append data into #results element
+            }).fail(function (xhr, ajaxOptions, thrownError) { //any errors?
+                console.log(thrownError);
+            })
+        }
     //Using for survey
     var survey_page = 1; //track user scroll as page number, right now page number is 1
     var loading_survey = false; //prevents multiple loads

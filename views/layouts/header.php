@@ -25,7 +25,7 @@
               <button class="btn-special">
                 <i class="icons_setting_mn_active">&nbsp;</i>
                 <span class="text">
-                  956
+                  <?php echo $user->balance  ?>
                 </span>
                 <span class="btn">
                   Redeem

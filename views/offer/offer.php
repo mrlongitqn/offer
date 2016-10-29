@@ -153,9 +153,9 @@
                         <img alt="avatar" src="<?php echo BASE_URL ?>public/img/top/avatar.png">
                     </div>
                     <div class="info">
-                        <p class="name">Memory No</p>
-                        <p>Account: nguyenvanan@gmail.com</p>
-                        <p>Referal code: fhgfuykildfhjj</p>
+                        <p class="name"><?php echo $user->fullname ?></p>
+                        <p>Account: <?php echo $user->email ?></p>
+                        <p>Referal code: <?php echo $user->id   ?></p>
                     </div>
                     <button class="btn-yellow" type="button">Bind Paypal Account</button>
                 </li>
