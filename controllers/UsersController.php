@@ -134,6 +134,10 @@ class UsersController extends BaseController
                 }
                 header("Location: " . BASE_URL);
                 break;
+            case 'balance':
+                $this->RefreshSession();
+                $balance = $this->member->balance;
+                echo $balance;
             default:
                 echo json_encode(new BaseResult(false, 'ERROR'));
                 break;

@@ -92,4 +92,5 @@ class UsersModel extends BaseModel
     public function InsertInfoLogin($data){
         $sql = "INSERT ";
     }
+        
 }

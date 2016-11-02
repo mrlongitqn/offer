@@ -123,7 +123,7 @@
             <form class="form-send">
                 <div class="form-item">
                     <i class="icon icons_mail">&nbsp;</i>
-                    <input type="text" name="email" placeholder="enter your email" class="input"/>
+                    <input type="text" name="email" value="<?php echo $user->email ?>" placeholder="enter your email" class="input"/>
                 </div>
                 <div class="widget-btn">
                     <button class="btn-black js-modal-target" data-modal="send-mail" type="button">
@@ -166,7 +166,7 @@
                     <div class="info">
                         <p>Points Available: 64</p>
                         <p>Total Points Receive: 64</p>
-                        <p>Total Points Redeemed: 0</p>
+                        <p>Redeemed Available: 0</p>
                     </div>
                     <button class="btn-yellow" type="button">Credit History</button>
                 </li>
